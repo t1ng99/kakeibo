@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!doctype html&gt;</p>
+<p class="p1">&lt;html lang="zh-Hant"&gt;&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;</p>
+<p class="p1">&lt;title&gt;家計簿&lt;/title&gt;</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1">:root{--bg:#f4f1ea;--hd:#1f3d2e;--gr:#2d6a4f;--gold:#c98a2b;--ink:#2b2b28;--mut:#77756c;--line:#e4dfd2;--rose:#f9e3e6;--mint:#e3f0e8;--sand:#faf1e0;--sky:#e6eff8}</p>
+<p class="p1">*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}</p>
+<p class="p1">header{background:var(--hd);color:#fff;display:flex;align-items:center;gap:8px;padding:12px 24px;flex-wrap:wrap}</p>
+<p class="p1">.logo{background:var(--gold);border-radius:8px;padding:2px 8px;font-weight:700;margin-right:6px}</p>
+<p class="p1">.brand{font-weight:700;margin-right:14px}</p>
+<p class="p1">nav button{background:none;border:0;color:#d5e2da;padding:7px 14px;border-radius:99px;font:inherit;cursor:pointer}</p>
+<p class="p1">nav button.on{background:#fff;color:var(--hd);font-weight:700}</p>
+<p class="p1">.sp{flex:1}.tag{background:var(--gold);color:#fff;font-size:12px;padding:1px 9px;border-radius:99px}</p>
+<p class="p1">.gh{background:none;border:1px solid #5b7a69;color:#fff;border-radius:99px;padding:5px 12px;font:inherit;cursor:pointer}</p>
+<p class="p1">main{max-width:1180px;margin:0 auto;padding:20px 24px 60px}</p>
+<p class="p1">h1{margin:6px 0 14px;font-size:28px}h3{margin:0 0 10px}</p>
+<p class="p1">.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}</p>
+<p class="p1">.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}</p>
+<p class="p1">.k{border-width:2px}.k1{background:#fdf6f7;border-color:#ecc3ca}.k2{background:#f3faf6;border-color:#bcd8c7}.k3{background:var(--rose);border-color:#dfa0ac}.k4{background:var(--mint);border-color:#9bc4ac}</p>
+<p class="p1">.k b{display:block;font-size:24px;margin-top:6px}.k small{color:var(--mut)}</p>
+<p class="p1">.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}</p>
+<p class="p1">input,select{font:inherit;border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:#fff;min-width:0}</p>
+<p class="p1">.btn{background:var(--gold);color:#fff;border:0;border-radius:99px;padding:8px 18px;font:inherit;font-weight:700;cursor:pointer}</p>
+<p class="p1">.btn.g{background:var(--gr)}.btn.o{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:400}</p>
+<p class="p1">.sm{padding:4px 12px;font-size:13px}</p>
+<p class="p1">.wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:860px}</p>
+<p class="p1">th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}</p>
+<p class="p1">td:first-child,th:first-child{text-align:left;font-weight:700}</p>
+<p class="p1">td input{width:96px;text-align:right;border-color:transparent;background:transparent}td input:focus{border-color:var(--gr);background:#fff}</p>
+<p class="p1">.t-sp{background:var(--sand)}.t-in{background:var(--sky)}.t-su{background:var(--rose)}.t-re{background:var(--mint)}</p>
+<p class="p1">.quick{border:2px solid var(--gold);border-radius:14px;padding:12px 14px;background:#fff;margin-bottom:18px}</p>
+<p class="p1">.grid{display:grid;grid-template-columns:2fr 1fr;gap:18px}@media(max-width:820px){.grid{grid-template-columns:1fr}}</p>
+<p class="p1">.pill{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 16px;cursor:pointer;font:inherit}.pill.on{background:var(--gr);color:#fff;border-color:var(--gr)}</p>
+<p class="p1">.item{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0;flex-wrap:wrap}</p>
+<p class="p1">.item .n{flex:1;min-width:140px}.item .a{font-weight:700;font-size:18px}.m{color:var(--mut);font-size:13px}</p>
+<p class="p1">.bar{height:8px;background:var(--line);border-radius:9px;margin:3px 0 10px}.bar i{display:block;height:100%;background:var(--gr);border-radius:9px}</p>
+<p class="p1">.x{cursor:pointer;color:#b0463c;background:none;border:0;font-size:16px}</p>
+<p class="p1">.login{max-width:380px;margin:18vh auto;text-align:center}.err{color:#b0463c}</p>
+<p class="p1">.ys{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}</p>
+<p class="p1">.ys div.l{display:flex;justify-content:space-between;padding:3px 0}</p>
+<p class="p1">&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div id="app"&gt;&lt;/div&gt;</p>
+<p class="p1">&lt;script type="module"&gt;</p>
+<p class="p1">import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";</p>
+<p class="p1">import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";</p>
+<p class="p1">import {getFirestore,doc,getDoc,setDoc,deleteDoc,collection,getDocs,onSnapshot,addDoc,updateDoc,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";</p>
+<p class="p2"><br></p>
+<p class="p1">const firebaseConfig={apiKey:"AIzaSyC2ud4hkmXQK7n_Hm7in-1kZTZBRT6kpxI",authDomain:"tkinaus.firebaseapp.com",projectId:"tkinaus",storageBucket:"tkinaus.firebasestorage.app",messagingSenderId:"816682262603",appId:"1:816682262603:web:d0522e30fcad3aafec6dce"};</p>
+<p class="p1">const ADMIN_EMAILS=["s13114153@gmail.com"];</p>
+<p class="p1">const DEF=["學費","居家","尿布、奶粉","醫療","保險","伙食","娛樂","其他"];</p>
+<p class="p2"><br></p>
+<p class="p1">const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);</p>
+<p class="p1">const S={cats:[...DEF],user:null,role:null,lid:null,tab:"in",year:new Date().getFullYear(),years:{},fixed:0,exp:[],members:[],sub:"unpaid",all:false,msg:""};</p>
+<p class="p1">const $=s=&gt;document.querySelector(s),n=x=&gt;Math.round(+x||0).toLocaleString();</p>
+<p class="p1">const esc=s=&gt;String(s??"").replace(/[&amp;&lt;&gt;"]/g,c=&gt;({"&amp;":"&amp;amp;","&lt;":"&amp;lt;","&gt;":"&amp;gt;",'"':"&amp;quot;"}[c]));</p>
+<p class="p1">const P=(...a)=&gt;collection(db,"ledgers",S.lid,...a), D=(...a)=&gt;doc(db,"ledgers",S.lid,...a);</p>
+<p class="p1">let unsub=null;</p>
+<p class="p2"><br></p>
+<p class="p1">onAuthStateChanged(auth,async u=&gt;{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>S.user=u;S.role=null;if(unsub)unsub();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(!u)return draw();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>try{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let m=await getDoc(doc(db,"members",u.email));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(!m.exists()&amp;&amp;ADMIN_EMAILS.includes(u.email)){await setDoc(doc(db,"members",u.email),{role:"admin"});m=await getDoc(doc(db,"members",u.email));}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(!m.exists()){S.msg="這個 Google 帳號尚未被授權,請聯絡管理者。";return draw();}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>S.role=m.data().role;S.lid="main";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(S.role==="admin")await loadMembers();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>await openLedger();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}catch(e){S.msg="讀取失敗:"+e.message;draw();}</p>
+<p class="p1">});</p>
+<p class="p1">async function loadMembers(){S.members=(await getDocs(collection(db,"members"))).docs.map(d=&gt;({email:d.id,role:d.data().role}));}</p>
+<p class="p1">async function openLedger(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(unsub)unsub();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>S.years={};(await getDocs(P("years"))).forEach(d=&gt;S.years[d.id]=d.data().m);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const f=await getDoc(D("meta","settings"));S.fixed=f.exists()?f.data().fixed||0:0;S.cats=f.exists()&amp;&amp;f.data().cats?.length?f.data().cats:[...DEF];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>unsub=onSnapshot(P("expenses"),s=&gt;{S.exp=s.docs.map(d=&gt;({id:d.id,...d.data()}));draw();});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>draw();</p>
+<p class="p1">}</p>
+<p class="p1">const g=(y,i,k)=&gt;+(S.years[y]?.[i]?.[k])||0;</p>
+<p class="p1">const tot=(y,i)=&gt;S.fixed+g(y,i,"extra"), act=(y,i)=&gt;g(y,i,"salary")+g(y,i,"stock")+g(y,i,"other");</p>
+<p class="p1">const sum=(y,f)=&gt;[...Array(12).keys()].reduce((a,i)=&gt;a+f(y,i),0);</p>
+<p class="p1">const calc=s=&gt;{s=String(s).trim().replace(/^=/,"");if(!/^[\d+\-*/().\s]+$/.test(s))return NaN;try{return Math.round(Function('"use strict";return('+s+')')())}catch{return NaN}};</p>
+<p class="p2"><br></p>
+<p class="p1">function draw(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const a=$("#app");</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(!S.user)return a.innerHTML=`&lt;div class="login card"&gt;&lt;h1&gt;家計簿&lt;/h1&gt;&lt;p class="m"&gt;用 Google 帳號登入,只有被授權的人可以進入。&lt;/p&gt;&lt;button class="btn" data-a="login"&gt;使用 Google 登入&lt;/button&gt;&lt;p class="err"&gt;${esc(S.msg)}&lt;/p&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(!S.role)return a.innerHTML=`&lt;div class="login card"&gt;&lt;h3&gt;無法進入&lt;/h3&gt;&lt;p class="err"&gt;${esc(S.msg)}&lt;/p&gt;&lt;button class="btn o" data-a="out"&gt;登出&lt;/button&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const adm=S.role==="admin",T=[["in","收入／存錢"],["st","歷年統計"],["ap","申請表"],...(adm?[["se","設定"]]:[])];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>a.innerHTML=`&lt;header&gt;&lt;span class="logo"&gt;家&lt;/span&gt;&lt;span class="brand"&gt;家計簿&lt;/span&gt;&lt;nav&gt;${T.map(t=&gt;`&lt;button class="${S.tab===t[0]?"on":""}" data-a="tab" data-v="${t[0]}"&gt;${t[1]}&lt;/button&gt;`).join("")}&lt;/nav&gt;&lt;span class="sp"&gt;&lt;/span&gt;&lt;span class="m" style="color:#cfe0d6"&gt;${esc(S.user.email)}&lt;/span&gt;&lt;span class="tag"&gt;${adm?"管理者":"成員"}&lt;/span&gt;&lt;button class="gh" data-a="out"&gt;登出&lt;/button&gt;&lt;/header&gt;&lt;main&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>${S.tab==="in"?vIn():S.tab==="st"?vSt():S.tab==="ap"?vAp():vSe()}&lt;/main&gt;`;</p>
+<p class="p1">}</p>
+<p class="p1">function vIn(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const y=S.year,ex=sum(y,(y,i)=&gt;g(y,i,"exp")),ac=sum(y,act),ts=sum(y,tot),es=ex-ts,as=ac-ts;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const inp=(i,k)=&gt;`&lt;td&gt;&lt;input data-a="cell" data-i="${i}" data-k="${k}" inputmode="numeric" value="${g(y,i,k)||""}"&gt;&lt;/td&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return `&lt;h1&gt;收入／存錢&lt;/h1&gt;&lt;div class="row" style="margin-bottom:14px"&gt;&lt;button class="pill" data-a="yr" data-v="-1"&gt;‹&lt;/button&gt;&lt;b&gt;${y}&lt;/b&gt;&lt;button class="pill" data-a="yr" data-v="1"&gt;›&lt;/button&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="cards"&gt;&lt;div class="card k k1"&gt;&lt;small&gt;${y} 預期入帳&lt;/small&gt;&lt;b&gt;${n(ex)}&lt;/b&gt;&lt;/div&gt;&lt;div class="card k k2"&gt;&lt;small&gt;預期存款&lt;/small&gt;&lt;b&gt;${n(es)}&lt;/b&gt;&lt;small&gt;每月固定支出 ${n(S.fixed)}&lt;/small&gt;&lt;/div&gt;&lt;div class="card k k3"&gt;&lt;small&gt;實際入帳&lt;/small&gt;&lt;b&gt;${n(ac)}&lt;/b&gt;&lt;/div&gt;&lt;div class="card k k4"&gt;&lt;small&gt;實際存款&lt;/small&gt;&lt;b&gt;${n(as)}&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card"&gt;&lt;h3&gt;${y} 每月詳細&lt;/h3&gt;&lt;div class="wrap"&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;月份&lt;/th&gt;&lt;th class="t-sp"&gt;額外開銷&lt;/th&gt;&lt;th class="t-sp"&gt;總開銷&lt;/th&gt;&lt;th&gt;預期入帳&lt;/th&gt;&lt;th&gt;預期存款&lt;/th&gt;&lt;th class="t-in"&gt;薪資&lt;/th&gt;&lt;th class="t-in"&gt;股票&lt;/th&gt;&lt;th class="t-in"&gt;其他&lt;/th&gt;&lt;th class="t-su"&gt;實際入帳&lt;/th&gt;&lt;th class="t-re"&gt;實際存款&lt;/th&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>${[...Array(12).keys()].map(i=&gt;`&lt;tr&gt;&lt;td&gt;${i+1}月&lt;/td&gt;${inp(i,"extra")}&lt;td&gt;${n(tot(y,i))}&lt;/td&gt;${inp(i,"exp")}&lt;td&gt;${n(g(y,i,"exp")-tot(y,i))}&lt;/td&gt;${inp(i,"salary")}${inp(i,"stock")}${inp(i,"other")}&lt;td&gt;${n(act(y,i))}&lt;/td&gt;&lt;td&gt;${n(act(y,i)-tot(y,i))}&lt;/td&gt;&lt;/tr&gt;`).join("")}&lt;/table&gt;&lt;/div&gt;&lt;p class="m"&gt;點數字直接修改,離開欄位即自動儲存。&lt;/p&gt;&lt;/div&gt;`;</p>
+<p class="p1">}</p>
+<p class="p1">function vSt(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const ys=[...new Set([...Object.keys(S.years).map(Number),new Date().getFullYear()])].sort((a,b)=&gt;b-a);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return `&lt;h1&gt;歷年統計&lt;/h1&gt;&lt;div class="ys"&gt;${ys.map(y=&gt;{const ex=sum(y,(y,i)=&gt;g(y,i,"exp")),ac=sum(y,act),ts=sum(y,tot),L=(a,b)=&gt;`&lt;div class="l"&gt;&lt;span&gt;${a}&lt;/span&gt;&lt;b&gt;${b}&lt;/b&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return `&lt;div class="card ${y===new Date().getFullYear()?"k":""}"&gt;&lt;h3&gt;${y}&lt;/h3&gt;${L("預期入帳",n(ex))}${L("實際入帳",n(ac))}${L("　薪資",n(sum(y,(y,i)=&gt;g(y,i,"salary"))))}${L("　股票",n(sum(y,(y,i)=&gt;g(y,i,"stock"))))}${L("　其他",n(sum(y,(y,i)=&gt;g(y,i,"other"))))}${L("預期存款",n(ex-ts))}${L("實際存款",n(ac-ts))}${L("落差(實際−預期)",n(ac-ex))}${L("存款比例",`預期 ${ex?Math.round((ex-ts)/ex*100):0}% / 實際 ${ac?Math.round((ac-ts)/ac*100):0}%`)}&lt;/div&gt;`}).join("")}&lt;/div&gt;`;</p>
+<p class="p1">}</p>
+<p class="p1">function vAp(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const un=S.exp.filter(e=&gt;!e.paid),pd=S.exp.filter(e=&gt;e.paid),total=S.exp.reduce((a,e)=&gt;a+e.amount,0);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const bs={};pd.forEach(e=&gt;{(bs[e.batch]??={d:e.paidDate,p:e.pay,t:0,c:0,k:e.batch});bs[e.batch].t+=e.amount;bs[e.batch].c++});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const B=Object.values(bs).sort((a,b)=&gt;b.d&gt;a.d?1:-1),shown=S.all?B:B.slice(0,8);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const cs={};S.exp.forEach(e=&gt;cs[e.cat]=(cs[e.cat]||0)+e.amount);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const today=new Date().toISOString().slice(0,10).replace(/-/g,"/");</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const list=p=&gt;{const r=un.filter(e=&gt;e.pay===p).sort((a,b)=&gt;b.date&gt;a.date?1:-1);return `&lt;h3&gt;${p==="card"?"信用卡":"現金"} &lt;span class="m"&gt;${r.length} 筆・${n(r.reduce((a,e)=&gt;a+e.amount,0))}&lt;/span&gt; ${r.length?`&lt;button class="btn g sm" data-a="pay" data-v="${p}"&gt;給付&lt;/button&gt;`:""}&lt;/h3&gt;${r.map(e=&gt;`&lt;div class="item"&gt;&lt;span class="m"&gt;${esc(e.date)}・${esc(e.cat)}&lt;/span&gt;&lt;span class="n"&gt;${esc(e.item)}&lt;/span&gt;&lt;span class="a" data-a="amt" data-id="${e.id}" style="cursor:pointer"&gt;${n(e.amount)}&lt;/span&gt;&lt;button class="x" data-a="del" data-id="${e.id}"&gt;✕&lt;/button&gt;&lt;/div&gt;`).join("")||'&lt;p class="m"&gt;沒有項目&lt;/p&gt;'}`};</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return `&lt;h1&gt;申請表 &lt;small class="m"&gt;累計 &lt;b style="color:var(--gr)"&gt;${n(total)}&lt;/b&gt;&lt;/small&gt;&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="quick"&gt;&lt;div class="row"&gt;&lt;b style="color:var(--gold)"&gt;快速記一筆&lt;/b&gt;&lt;input id="qd" value="${today}" size="10"&gt;&lt;select id="qc"&gt;${S.cats.map(c=&gt;`&lt;option&gt;${c}&lt;/option&gt;`).join("")}&lt;/select&gt;&lt;select id="qp"&gt;&lt;option value="card"&gt;信用卡&lt;/option&gt;&lt;option value="cash"&gt;現金&lt;/option&gt;&lt;/select&gt;&lt;input id="qi" placeholder="項目" style="flex:1;min-width:120px"&gt;&lt;input id="qa" placeholder="金額,可算式" size="12"&gt;&lt;button class="btn" data-a="add"&gt;記下&lt;/button&gt;&lt;/div&gt;&lt;div class="m"&gt;金額可直接打算式:=200/2 按 Enter 自動變 100。&lt;/div&gt;&lt;div class="err" id="qe"&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="grid"&gt;&lt;div class="card"&gt;&lt;div class="row" style="margin-bottom:8px"&gt;&lt;button class="pill ${S.sub==="unpaid"?"on":""}" data-a="sub" data-v="unpaid"&gt;未給付 ${n(un.reduce((a,e)=&gt;a+e.amount,0))}&lt;/button&gt;&lt;button class="pill ${S.sub==="paid"?"on":""}" data-a="sub" data-v="paid"&gt;已給付(${B.length} 批)&lt;/button&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>${S.sub==="unpaid"?list("card")+list("cash"):shown.map(b=&gt;`&lt;div class="item"&gt;&lt;span class="tag" style="background:var(--gr)"&gt;已給付・${b.p==="card"?"轉帳":"現金"}&lt;/span&gt;&lt;span class="n m"&gt;${esc(b.d)}&lt;/span&gt;&lt;span class="a"&gt;${n(b.t)}&lt;/span&gt;&lt;span class="m"&gt;${b.c} 筆&lt;/span&gt;&lt;/div&gt;`).join("")+(B.length&gt;8&amp;&amp;!S.all?'&lt;button class="pill" data-a="all"&gt;顯示全部&lt;/button&gt;':"")}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card"&gt;&lt;h3&gt;分類統計&lt;/h3&gt;${S.cats.concat(Object.keys(cs).filter(c=&gt;!S.cats.includes(c))).filter(c=&gt;cs[c]).sort((a,b)=&gt;cs[b]-cs[a]).map(c=&gt;`&lt;div class="row" style="justify-content:space-between"&gt;&lt;b&gt;${esc(c)}&lt;/b&gt;&lt;span class="m"&gt;${n(cs[c])}・${(cs[c]/total*100).toFixed(1)}%&lt;/span&gt;&lt;/div&gt;&lt;div class="bar"&gt;&lt;i style="width:${cs[c]/total*100}%"&gt;&lt;/i&gt;&lt;/div&gt;`).join("")||'&lt;p class="m"&gt;還沒有資料&lt;/p&gt;'}&lt;div class="row" style="justify-content:space-between"&gt;&lt;b&gt;總計&lt;/b&gt;&lt;b style="color:var(--gr)"&gt;${n(total)}&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`;</p>
+<p class="p1">}</p>
+<p class="p1">function vSe(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return `&lt;h1&gt;設定&lt;/h1&gt;&lt;div class="card" style="margin-bottom:14px"&gt;&lt;h3&gt;每月固定支出(兩人共用)&lt;/h3&gt;&lt;div class="row"&gt;&lt;input id="fx" inputmode="numeric" value="${S.fixed}"&gt;&lt;button class="btn g sm" data-a="fixed"&gt;儲存&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card" style="margin-bottom:14px"&gt;&lt;h3&gt;分類&lt;/h3&gt;&lt;div class="row"&gt;${S.cats.map(c=&gt;`&lt;span class="pill"&gt;${esc(c)} &lt;button class="x" data-a="rmc" data-v="${esc(c)}"&gt;✕&lt;/button&gt;&lt;/span&gt;`).join("")}&lt;/div&gt;&lt;div class="row" style="margin-top:10px"&gt;&lt;input id="nc" placeholder="新分類名稱"&gt;&lt;button class="btn sm" data-a="addc"&gt;新增&lt;/button&gt;&lt;/div&gt;&lt;p class="m"&gt;移除分類不會刪掉舊紀錄,舊紀錄仍會出現在統計裡。&lt;/p&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card"&gt;&lt;h3&gt;使用權限&lt;/h3&gt;&lt;p class="m"&gt;管理者:可管理成員與設定。成員:和管理者一起查看、記錄同一本共同帳本。&lt;/p&gt;${S.members.map(m=&gt;`&lt;div class="item"&gt;&lt;span class="n"&gt;${esc(m.email)}&lt;/span&gt;&lt;select data-a="role" data-id="${esc(m.email)}"&gt;&lt;option value="admin" ${m.role==="admin"?"selected":""}&gt;管理者&lt;/option&gt;&lt;option value="member" ${m.role==="member"?"selected":""}&gt;成員&lt;/option&gt;&lt;/select&gt;${m.email!==S.user.email?`&lt;button class="x" data-a="rm" data-id="${esc(m.email)}"&gt;✕&lt;/button&gt;`:""}&lt;/div&gt;`).join("")}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="row" style="margin-top:10px"&gt;&lt;input id="me" type="email" placeholder="對方的 Gmail" style="flex:1"&gt;&lt;select id="mr"&gt;&lt;option value="member"&gt;成員&lt;/option&gt;&lt;option value="admin"&gt;管理者&lt;/option&gt;&lt;/select&gt;&lt;button class="btn sm" data-a="addm"&gt;新增&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;`;</p>
+<p class="p1">}</p>
+<p class="p1">const saveSet=()=&gt;setDoc(D("meta","settings"),{fixed:S.fixed,cats:S.cats});</p>
+<p class="p1">const act_={</p>
+<p class="p1"><span class="Apple-converted-space">  </span>login:()=&gt;signInWithPopup(auth,new GoogleAuthProvider()).catch(e=&gt;{S.msg=e.message;draw()}),</p>
+<p class="p1"><span class="Apple-converted-space">  </span>out:()=&gt;signOut(auth),tab:v=&gt;{S.tab=v;draw()},yr:v=&gt;{S.year+=+v;draw()},sub:v=&gt;{S.sub=v;draw()},all:()=&gt;{S.all=true;draw()},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>add:async()=&gt;{const v=calc($("#qa").value),it=$("#qi").value.trim();if(!(v&gt;0)||!it)return $("#qe").textContent="請填項目與正確金額";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>await addDoc(P("expenses"),{date:$("#qd").value,cat:$("#qc").value,pay:$("#qp").value,item:it,amount:v,paid:false});},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>del:async(_,e)=&gt;{if(confirm("刪除這筆?"))await deleteDoc(D("expenses",e.dataset.id))},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>amt:async(_,e)=&gt;{const v=calc(prompt("新金額(可算式)")||"");if(v&gt;0)await updateDoc(D("expenses",e.dataset.id),{amount:v})},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>pay:async v=&gt;{const b=writeBatch(db),id="b"+Date.now(),d=new Date().toISOString().slice(0,10).replace(/-/g,"/");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>S.exp.filter(e=&gt;!e.paid&amp;&amp;e.pay===v).forEach(e=&gt;b.update(D("expenses",e.id),{paid:true,batch:id,paidDate:d}));await b.commit();},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>fixed:async()=&gt;{S.fixed=+$("#fx").value||0;await saveSet();draw()},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>addc:async()=&gt;{const c=$("#nc").value.trim();if(c&amp;&amp;!S.cats.includes(c)){S.cats.push(c);await saveSet()}draw()},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>rmc:async v=&gt;{if(S.cats.length&gt;1){S.cats=S.cats.filter(c=&gt;c!==v);await saveSet()}draw()},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>addm:async()=&gt;{const m=$("#me").value.trim().toLowerCase();if(!m)return;await setDoc(doc(db,"members",m),{role:$("#mr").value});await loadMembers();draw()},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>rm:async(_,e)=&gt;{if(confirm("移除這位成員的權限?")){await deleteDoc(doc(db,"members",e.dataset.id));await loadMembers();draw()}}</p>
+<p class="p1">};</p>
+<p class="p1">document.addEventListener("click",e=&gt;{const t=e.target.closest("[data-a]");if(t&amp;&amp;t.tagName!=="SELECT"&amp;&amp;t.tagName!=="INPUT"&amp;&amp;act_[t.dataset.a])act_[t.dataset.a](t.dataset.v,t)});</p>
+<p class="p1">document.addEventListener("keydown",e=&gt;{if(e.key==="Enter"&amp;&amp;e.target.id==="qa"){e.target.value=calc(e.target.value)||e.target.value;act_.add()}});</p>
+<p class="p1">document.addEventListener("change",async e=&gt;{const t=e.target,a=t.dataset.a;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(a==="cell"){const y=S.year,m=S.years[y]??=Array.from({length:12},()=&gt;({}));m[+t.dataset.i][t.dataset.k]=calc(t.value)||0;await setDoc(D("years",String(y)),{m});draw()}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(a==="role"){await setDoc(doc(db,"members",t.dataset.id),{role:t.value});await loadMembers()}</p>
+<p class="p1">});</p>
+<p class="p1">&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</p>
+</body>
+</html>
