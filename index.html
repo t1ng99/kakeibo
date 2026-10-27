@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>我們的家計簿</title>
+<title>我們</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
 <style>
 :root{--bg:#fff5f8;--hd:#ffc2d4;--gr:#4fbf98;--gold:#ff7fa6;--ink:#5b4756;--mut:#a68c9b;--line:#ffdbe6;--rose:#ffe4ec;--mint:#def5ea;--sand:#fff1de;--sky:#e3efff;--lav:#efe9ff}
@@ -64,8 +64,8 @@ import {getFirestore,doc,getDoc,setDoc,deleteDoc,collection,getDocs,onSnapshot,a
 const firebaseConfig={apiKey:"AIzaSyC2ud4hkmXQK7n_Hm7in-1kZTZBRT6kpxI",authDomain:"tkinaus.firebaseapp.com",projectId:"tkinaus",storageBucket:"tkinaus.firebasestorage.app",messagingSenderId:"816682262603",appId:"1:816682262603:web:d0522e30fcad3aafec6dce"};
 /* ====== 2. 你自己的 Gmail,第一次登入會自動成為管理者(需與 firestore.rules 內相同) ====== */
 const ADMIN_EMAILS=["s13114153@gmail.com"];
-const PDEF=["現金","信用卡","共同帳戶卡"],ADEF=["共同帳戶","個人存款"],SP="共同帳戶卡",SA="共同帳戶";
-const DEF=["學費","居家","尿布、奶粉","醫療","保險","伙食","娛樂","其他"],IDEF=["薪資","其他"];
+const PDEF=["現金","信用卡","Joint"],ADEF=["共同帳戶","個人存款"],SP="共同帳戶卡",SA="共同帳戶";
+const DEF=["伙食","居家","超市","醫療","保險","學費","娛樂","訂閱","其他"],IDEF=["薪資","其他"];
 
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const now=new Date(),FY0=now.getMonth()>=6?now.getFullYear():now.getFullYear()-1;
@@ -224,4 +224,121 @@ function vWk(){
   <div class="quick"><div class="row"><b style="color:var(--gold)">記一筆工作(${nm(p)})</b>${J?`<select data-a="wj">${jobs.map(j=>`<option value="${j.id}" ${j.id===J.id?"selected":""}>${esc(j.name)}</option>`).join("")}</select><select data-a="wmode"><option value="h" ${md==="h"?"selected":""}>工時</option><option value="p" ${md==="p"?"selected":""}>計件</option></select><input id="wd" type="date" value="${tk()}">${md==="h"?`<input id="ws" type="time" value="09:00"><span class="m">到</span><input id="we" type="time" value="17:00"><span class="m">休息(分)</span><input id="wb" inputmode="numeric" size="3" value="30"><select id="wx"><option value="1">倍率 1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2">2x</option></select>`:`${(J.units||[]).length?`<select id="wu">${J.units.map(u=>`<option value="${esc(u.name)}">${esc(u.name)} ($${u.price})</option>`).join("")}</select><input id="wq" inputmode="decimal" placeholder="數量" size="6">`:'<span class="m">這份工作沒有計件單價</span>'}`}<button class="btn" data-a="addw">記下</button>`:'<span class="m">先新增一份工作才能記工時。</span>'}</div><div class="err" id="we2"></div></div>
   <div class="grid"><div class="card"><h3>每月薪資</h3><div class="wrap"><table><tr><th>月份</th><th>工時</th><th>稅前</th><th>預估稅</th><th class="t-re">稅後</th><th></th></tr>
   ${keys.map(k=>{const o=r.mo[k]||{h:0,g:0,t:0};return `<tr><td>${k}</td><td>${H(o.h)}</td><td>${n(o.g)}</td><td>${n(o.t)}</td><td>${n(o.g-o.t)}</td><td>${o.g?`<button class="btn g sm" data-a="payinc" data-v="${k}" data-amt="${Math.round(o.g-o.t)}">記為收入</button>`:""}</td></tr>`}).join("")}</table></div>
-  <p
+  <p class="m">稅是用整個財年(7/1–6/30)所有工作的累計收入,依 ATO 2026–27 稅率逐筆估算,所以前面幾個月稅少、超過門檻後會變多。「記為收入」會把該月稅後金額加進收支表(類別:薪資)。</p>
+  <h3 style="margin-top:14px">各工作統計</h3><div class="wrap"><table><tr><th>工作</th><th>工時</th><th>件數</th><th>稅前</th></tr>${jr.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${H(v.h)}</td><td>${v.n||""}</td><td>${n(v.g)}</td></tr>`).join("")||'<tr><td colspan="4" class="m">還沒有紀錄</td></tr>'}</table></div></div>
+  <div class="card"><h3>最近紀錄</h3>${r.rows.slice().reverse().slice(0,40).map(s=>`<div class="item"><span class="n"><b>${esc(s.jn)}</b><br><span class="m">${esc(dk(s.date))} ${s.kind==="piece"?esc((s.qty||0)+" "+(s.unit||"")+" × "+(s.price||0)):esc(s.start+"–"+s.end)+"・"+H(s.hours)+"h"+((s.dm||s.mult)>1?" ×"+(s.dm||s.mult):"")}</span></span><span class="a">${n(s.g)}</span><button class="x" data-a="delc" data-c="shifts" data-id="${s.id}">✕</button></div>`).join("")||'<p class="m">這個財年還沒有紀錄</p>'}</div></div>
+  <p class="m" style="margin-top:14px">這是估算,實際以雇主的扣繳與報稅結果為準。Medicare 低收入減免、HELP 還款、多份工作的免稅額分配都沒有計入;居民身分已計入 LITO 低收入抵減。</p>`;
+}
+function vPt(){
+  const me=S.user.email,ppl=pplAll(),oth=ppl.filter(e=>e!==me),v=ppl.includes(S.pp)?S.pp:me,mine=v===me;
+  const cells=(b,k)=>`<div class="stamp ${k}">${[...Array(GOAL).keys()].map(i=>`<div class="${i<b?"f":""}"><small>${i+1}</small><span>${i===GOAL-1?"🎁":AN[k]}</span></div>`).join("")}</div>`;
+  const card=e=>`<div class="card zc"><h3>${AV(e)} ${nm(e)}的集點卡</h3>${["good","bad"].map(k=>{const b=bal(e,k);return `<div class="zk"><div class="zt"><b>${AN[k]} ${KL[k]}</b><span class="m">${b} 點${b>=GOAL?`・可兌換 ${Math.floor(b/GOAL)} 次!`:`・還差 ${GOAL-b} 點`}</span></div>${cells(Math.min(b,GOAL),k)}</div>`}).join("")}</div>`;
+  const pend=S.wish.filter(w=>w.type==="wish"&&w.status==="requested"&&w.owner!==me);
+  const log=S.pts.slice().sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,15);
+  const ws=S.wish.filter(w=>w.owner===v).sort((a,b)=>(a.at||0)-(b.at||0));
+  const wrow=w=>{const gk=w.type==="good"||w.type==="bad",b=bal(w.owner,w.type);let ac="";
+    if(gk){ac=w.status==="done"?"":mine?(b>=GOAL?`<button class="btn g sm" data-a="redeem" data-id="${w.id}">用 ${GOAL} 點兌換</button>`:`<span class="m">還差 ${GOAL-b} 點</span>`):""}
+    else if(w.status==="open"||w.status==="declined")ac=mine?`<button class="btn sm" data-a="wstat" data-v="requested" data-id="${w.id}">${w.status==="declined"?"重新申請":"提出申請"}</button>`:"";
+    else if(w.status==="requested")ac=mine?'<span class="m">等對方同意</span>':`<button class="btn g sm" data-a="wstat" data-v="approved" data-id="${w.id}">同意</button><button class="btn o sm" data-a="wstat" data-v="declined" data-id="${w.id}">婉拒</button>`;
+    else if(w.status==="approved")ac=`<button class="btn g sm" data-a="wstat" data-v="done" data-id="${w.id}">標記已達成</button>`;
+    const st=gk?(w.status==="done"?"已兌換":"待兌換"):WS[w.status];
+    return `<div class="item"><span class="tag ${w.type==="bad"?"x":w.type==="good"?"i":"s"}">${gk?AN[w.type]+" "+KL[w.type].replace("寶寶","")+"願望":"🌟 願望"}</span><span class="n" style="${w.status==="done"?"text-decoration:line-through;color:var(--mut)":""}">${esc(w.text)}</span><span class="m">${st}</span>${ac}${mine?`<button class="x" data-a="delc" data-c="wishes" data-id="${w.id}">✕</button>`:""}</div>`};
+  return `<div class="zoo"><h1>集點小卡</h1>
+  ${pend.length?`<div class="quick"><b style="color:var(--gold)">🌟 有 ${pend.length} 個願望等你同意</b> <span class="m">${pend.map(w=>nm(w.owner)+":"+esc(w.text)).join("、")}</span><div class="m">到下方願望清單(點對方的名字)按同意或婉拒。</div></div>`:""}
+  <div class="cards">${ppl.map(card).join("")}</div>
+  <div class="quick"><div class="row"><b style="color:var(--gold)">給點數</b>${oth.length?`<select id="pg">${oth.map(e=>`<option value="${esc(e)}">${AV(e)} ${nm(e)}</option>`).join("")}</select><input id="pn" placeholder="原因(選填)" style="flex:1;min-width:140px"><button class="btn g" data-a="give" data-v="good">♥ 好寶寶 +1</button><button class="btn" data-a="give" data-v="bad" style="background:linear-gradient(135deg,#a58cff,#c7b3ff)">★ 壞寶寶 +1</button>`:'<span class="m">等對方登入過一次,名字就會出現在這裡。</span>'}</div></div>
+  <div class="grid"><div class="card"><h3>最近紀錄</h3>${log.map(q=>`<div class="item"><span class="tag ${q.kind==="bad"?"x":"i"}">${AN[q.kind]} ${KL[q.kind]}</span><span class="n">${nm(q.by)} → ${nm(q.to)}　${q.delta>0?"+":""}${q.delta}${q.note?"・"+esc(q.note):""}</span>${q.by===me?`<button class="x" data-a="delc" data-c="points" data-id="${q.id}">✕</button>`:""}</div>`).join("")||'<p class="m">還沒有紀錄</p>'}</div>
+  <div class="card"><h3>規則</h3><p class="m">對方給你的好寶寶或壞寶寶,集滿 ${GOAL} 點,就能兌換自己願望清單裡對應的「好願望」或「壞願望」,由對方幫你實現,兌換會扣 ${GOAL} 點。一般「願望」不用點數,但要先提出申請,對方同意後才算數。</p></div></div>
+  <h1 style="margin-top:24px">🌟 願望清單</h1><div class="row" style="margin-bottom:14px">${ppl.map(e=>`<button class="pill ${e===v?"on":""}" data-a="pp" data-v="${esc(e)}">${AV(e)} ${nm(e)}</button>`).join("")}</div>
+  ${mine?`<div class="quick"><div class="row"><b style="color:var(--gold)">新增願望</b><select id="wty"><option value="good">♥ 好願望(用 ${GOAL} 點好寶寶兌換)</option><option value="bad">★ 壞願望(用 ${GOAL} 點壞寶寶兌換)</option><option value="wish">🌟 願望(需對方同意)</option></select><input id="wt" placeholder="想要什麼?" style="flex:1;min-width:160px"><button class="btn" data-a="addwish">新增</button></div></div>`:""}
+  <div class="card">${ws.map(wrow).join("")||'<p class="m">這份清單還是空的</p>'}</div></div>`;
+}
+function vCal(){
+  const y=S.cy,m=S.cm,pre=ym(y,m),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),t0=tk();
+  const by=arr=>{const o={};arr.forEach(e=>{const k=dk(e.date);if(k&&k.startsWith(pre))(o[k]??=[]).push(e)});return o};
+  const E=by(S.ev),I=by(S.inc),X=by(S.exp),sm=a=>sumA(a||[]),all=o=>Object.values(o).flat();
+  const ti=sm(all(I)),tx=sm(all(X)),c=[];
+  for(let i=0;i<first;i++)c.push("<div></div>");
+  for(let d=1;d<=days;d++){const k=pre+"-"+pad(d),ev=E[k]||[],ni=sm(I[k]),ex=sm(X[k]);
+    c.push(`<div class="day ${S.sel===k?"sel":""} ${k===t0?"td":""}" data-a="pick" data-v="${k}"><b>${d}</b>${ev.slice(0,2).map(e=>`<div class="ev">${esc(e.title)}</div>`).join("")}${ev.length>2?`<div class="m">+${ev.length-2}</div>`:""}${ni?`<div class="gi">+${n(ni)}</div>`:""}${ex?`<div class="rx">-${n(ex)}</div>`:""}</div>`)}
+  const k=S.sel,L=(arr,f)=>(arr||[]).map(f).join("")||'<p class="m">沒有</p>';
+  const det=k?`<div class="card" style="margin-top:14px"><h3>${k}</h3>
+  <b>行程</b>${L(E[k],e=>`<div class="item"><span class="n">${esc(e.title)}</span><button class="x" data-a="delc" data-c="events" data-id="${e.id}">✕</button></div>`)}
+  <div class="row" style="margin:8px 0 16px"><input id="et" placeholder="新增行程" style="flex:1"><button class="btn sm" data-a="adde">新增</button></div>
+  <b>收入</b> <span class="m">(請到收支表記錄)</span>${L(I[k],e=>`<div class="item"><span class="n">${esc(e.item)}</span><span class="a">+${n(e.amount)}</span></div>`)}
+  <b>支出</b>${L(X[k],e=>`<div class="item"><span class="m">${esc(e.cat)}</span><span class="n">${esc(e.item)}</span><span class="a">-${n(e.amount)}</span></div>`)}</div>`:'<p class="m">點日期可以新增行程,也能看當天的收入與支出。</p>';
+  return `<h1>月曆</h1><div class="row" style="margin-bottom:14px"><button class="pill" data-a="cm" data-v="-1">‹</button><b>${y} 年 ${m+1} 月</b><button class="pill" data-a="cm" data-v="1">›</button></div>
+  <div class="cards"><div class="card k k4"><small>本月收入</small><b>${n(ti)}</b></div><div class="card k k3"><small>本月支出</small><b>${n(tx)}</b></div><div class="card k k2"><small>差額</small><b>${n(ti-tx)}</b></div></div>
+  <div class="card"><div class="cal">${"日一二三四五六".split("").map(w=>`<div class="wd">${w}</div>`).join("")}${c.join("")}</div></div>${det}`;
+}
+function todoCard(){
+  const o=S.todos.slice().sort((a,b)=>(a.due||"9")>(b.due||"9")?1:-1),open=o.filter(t=>!t.done),done=o.filter(t=>t.done).sort((a,b)=>(b.at||0)-(a.at||0)),t0=tk();
+  const row=t=>`<div class="item"><input type="checkbox" data-a="tog" data-id="${t.id}" ${t.done?"checked":""}><span class="n" style="${t.done?"text-decoration:line-through;color:var(--mut)":""}">${esc(t.text)}</span>${t.due?`<span class="m" style="${!t.done&&t.due<t0?"color:#ee5f8c":""}">${esc(t.due)}</span>`:""}<span class="m">${nm(t.by)}</span><button class="x" data-a="delc" data-c="todos" data-id="${t.id}">✕</button></div>`;
+  return `<h3>待辦事項 <span class="m">${open.length} 件未完成</span></h3><div class="row"><input id="tt" placeholder="要做什麼?" style="flex:1;min-width:140px"><input id="tdd" type="date"><button class="btn" data-a="addt">新增</button></div>
+  ${open.map(row).join("")||'<p class="m">全部完成了</p>'}<h3 style="margin-top:14px">已完成 <span class="m">${done.length}</span></h3>${done.map(row).join("")||'<p class="m">還沒有</p>'}`;
+}
+function vSe(){
+  const cc=(t,key,id)=>`<div class="card" style="margin-bottom:14px"><h3>${t}</h3><div class="row">${S[key].map(c=>`<span class="pill">${esc(c)} ${[SP,SA].includes(c)?"":`<button class="x" data-a="rmc" data-k="${key}" data-v="${esc(c)}">✕</button>`}</span>`).join("")}</div><div class="row" style="margin-top:10px"><input id="${id}" placeholder="新分類名稱"><button class="btn sm" data-a="addc" data-k="${key}" data-i="${id}">新增</button></div></div>`;
+  return `<h1>設定</h1><div class="card" style="margin-bottom:14px"><h3>每週固定支出(兩人共用)</h3><div class="row"><input id="fx" inputmode="numeric" value="${S.weekly}"><button class="btn g sm" data-a="fixed">儲存</button></div><p class="m">房租、水電等固定開銷。每月金額會依該月天數換算(每週金額 × 天數 ÷ 7),不用再記到收支表。</p></div>
+  ${cc("支出分類","cats","nc1")}${cc("收入分類","icats","nc2")}${cc("付款方式","pays","nc3")}${cc("存款帳戶","accts","nc4")}<div class="card" style="margin-bottom:14px"><h3>帳戶與扣款卡</h3>${S.accts.map(a=>`<div class="item"><span class="n">${esc(a)}</span><span class="m">扣款卡</span><select data-a="lnk" data-id="${esc(a)}" ${a===SA?"disabled":""}><option value="">(無)</option>${S.pays.map(c=>`<option ${S.link[a]===c?"selected":""}>${esc(c)}</option>`).join("")}</select></div>`).join("")}<p class="m">每個帳戶可以對應一種付款方式(扣款卡),該卡的支出會算在這個帳戶,總覽就能顯示每個帳戶的結餘。例如新增帳戶「Jia 銀行帳戶」和付款方式「Jia 銀行卡」,再在這裡對應起來。「共同帳戶」固定對應「共同帳戶卡」,兩者都不能移除。</p></div>
+  <div class="card"><h3>使用權限</h3><p class="m">管理者:可管理成員與設定。成員:和管理者一起查看、記錄同一本共同帳本。</p>${S.members.map(m=>`<div class="item"><span class="n">${nm(m.email)} <span class="m">${esc(m.email)}</span></span><select data-a="role" data-id="${esc(m.email)}"><option value="admin" ${m.role==="admin"?"selected":""}>管理者</option><option value="member" ${m.role==="member"?"selected":""}>成員</option></select>${m.email!==S.user.email?`<button class="x" data-a="rm" data-id="${esc(m.email)}">✕</button>`:""}</div>`).join("")}
+  <div class="row" style="margin-top:10px"><input id="me" type="email" placeholder="對方的 Gmail" style="flex:1"><select id="mr"><option value="member">成員</option><option value="admin">管理者</option></select><button class="btn sm" data-a="addm">新增</button></div></div>`;
+}
+const saveSet=()=>setDoc(D("meta","settings"),{weekly:S.weekly,cats:S.cats,icats:S.icats,pays:S.pays,accts:S.accts,link:S.link,since:S.since},{merge:true});
+const shrink=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.72))};im.onerror=rej;im.src=r.result};r.onerror=rej;r.readAsDataURL(f)});
+const act_={
+  since:async()=>{S.since=$("#sinceIn").value;await saveSet();draw()},
+  zoom:v=>{S.zoom=v;draw()},zoomx:()=>{S.zoom=null;draw()},
+  cap:async(_,e)=>{const c=prompt("照片說明");if(c!==null)await updateDoc(D("photos",e.dataset.id),{cap:c.trim()})},
+  addn:async()=>{const t=$("#nt").value.trim();if(t)await addDoc(P("notes"),{text:t,by:S.user.email,at:Date.now()})},
+  prof:()=>{S.pf=!S.pf;draw()},
+  pfsave:async()=>{await setDoc(D("people",S.user.email),{email:S.user.email,name:$("#pfn").value.trim(),avatar:$("#pfa").value,seen:Date.now()},{merge:true});S.pf=false;draw()},
+  ac:v=>{S.ac=v;draw()},pp:v=>{S.pp=v;draw()},
+  give:async v=>{const to=$("#pg")?.value;if(!to)return;await addDoc(P("points"),{to,kind:v,delta:1,note:$("#pn").value.trim(),by:S.user.email,at:Date.now()})},
+  addwish:async()=>{const t=$("#wt").value.trim();if(t)await addDoc(P("wishes"),{owner:S.user.email,text:t,type:$("#wty").value,status:"open",at:Date.now()})},
+  wstat:async(v,e)=>{await updateDoc(D("wishes",e.dataset.id),{status:v,by:S.user.email,upd:Date.now()})},
+  redeem:async(_,e)=>{const w=S.wish.find(x=>x.id===e.dataset.id);if(!w||bal(w.owner,w.type)<GOAL||!confirm("用 "+GOAL+" 點兌換這個願望?"))return;
+    await addDoc(P("points"),{to:w.owner,kind:w.type,delta:-GOAL,note:"兌換:"+w.text,by:S.user.email,at:Date.now()});await updateDoc(D("wishes",w.id),{status:"done",upd:Date.now()})},
+  cm:v=>{S.cm+=+v;if(S.cm<0){S.cm=11;S.cy--}if(S.cm>11){S.cm=0;S.cy++}S.sel=null;draw()},pick:v=>{S.sel=v;draw()},
+  am:v=>{S.am+=+v;if(S.am<0){S.am=11;S.ay--}if(S.am>11){S.am=0;S.ay++}draw()},
+  wp:v=>{S.wp=v;draw()},wy:v=>{S.wy+=+v;draw()},
+  adde:async()=>{const t=$("#et").value.trim();if(t)await addDoc(P("events"),{date:S.sel,title:t})},
+  addt:async()=>{const t=$("#tt").value.trim();if(t)await addDoc(P("todos"),{text:t,due:$("#tdd").value,done:false,by:S.user.email,at:Date.now()})},
+  delc:async(_,e)=>{if(confirm("刪除這筆?"))await deleteDoc(D(e.dataset.c,e.dataset.id))},
+  login:()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>{S.msg=e.message;draw()}),
+  out:()=>signOut(auth),tab:v=>{S.tab=v;draw()},yr:v=>{S.year+=+v;draw()},
+  amt:async(_,e)=>{const v=calc(prompt("新金額(可算式)")||"");if(v>0)await updateDoc(D(e.dataset.c,e.dataset.id),{amount:v})},
+  savew:async()=>{const me=S.wp||S.user.email;await setDoc(D("work",me),{mode:$("#wm").value,medicare:$("#wc").checked,flat:+$("#wf").value||0},{merge:true})},
+  jobedit:v=>{S.je=v;draw()},jobcancel:()=>{S.je=null;draw()},
+  jobsave:async()=>{const me=S.wp||S.user.email,d={owner:me,name:$("#jn").value.trim(),rate:+$("#jr").value||0,ot:parseOT($("#jo").value),units:parseUnits($("#ju").value)};if(!d.name)return $("#je2").textContent="請填工作名稱";if(!(d.rate>0)&&!d.units.length)return $("#je2").textContent="請至少填時薪或一種計件單價";
+    if(S.je)await updateDoc(D("jobs",S.je),d);else await addDoc(P("jobs"),{...d,at:Date.now()});S.je=null;draw()},
+  addw:async()=>{const me=S.wp||S.user.email,mj=S.jobs.filter(j=>j.owner===me).sort((a,b)=>(a.at||0)-(b.at||0)),J=mj.find(j=>j.id===S.wj)||mj[0],err=t=>$("#we2").textContent=t;if(!J)return err("請先新增一份工作");const date=$("#wd").value;if(!date)return err("請填日期");
+    if(wmodeOf(J)==="p"){const u=(J.units||[]).find(x=>x.name===$("#wu")?.value),q=+$("#wq").value;if(!u||!(q>0))return err("請選單位並填數量");await addDoc(P("shifts"),{kind:"piece",job:J.id,jobName:J.name,date,unit:u.name,qty:q,price:u.price,by:me,at:Date.now()})}
+    else{if(!(J.rate>0))return err("這份工作沒有設定時薪,請切換到計件或先編輯工作");const h=hrs($("#ws").value,$("#we").value,$("#wb").value);if(!(h>0))return err("請填正確的上下班時間");await addDoc(P("shifts"),{kind:"hourly",job:J.id,jobName:J.name,date,start:$("#ws").value,end:$("#we").value,brk:+$("#wb").value||0,hours:h,rate:J.rate,ot:J.ot||[],dm:+$("#wx").value,by:me,at:Date.now()})}},
+  edit:(_,e)=>{S.ed=e.dataset.id?{c:e.dataset.c,id:e.dataset.id}:null;draw()},clrf:()=>{S.fw=S.fc=S.fp=S.fq="";draw()},
+  add:async()=>{const v=calc($("#qa").value),it=$("#qi").value.trim(),d=dk($("#qd").value);if(!(v>0)||!it)return $("#qe").textContent="請填項目與正確金額";if(!d)return $("#qe").textContent="日期格式請用 2026/10/25 或 10/25";
+    const t=S.ed?S.ed.c:({i:"incomes",s:"savings",x:"expenses"})[S.qt],c=$("#qc").value,b={date:d.replace(/-/g,"/"),item:it,amount:v,by:$("#qw").value,note:$("#qn").value.trim()};
+    if($("#qs"))b.store=$("#qs").value.trim();if(t==="savings")b.acct=c;else b.cat=c;if(t==="expenses")b.pay=$("#qp").value;
+    if(S.ed){await updateDoc(D(S.ed.c,S.ed.id),b);S.ed=null;draw()}else await addDoc(P(t),b);},
+  payinc:async(v,e)=>{const item="薪資("+NM(S.wp||S.user.email)+" "+v+")";if(S.inc.some(x=>x.item===item)&&!confirm("這個月已經記過了,要再記一次嗎?"))return;
+    const [y,m]=v.split("-"),last=new Date(+y,+m,0).getDate();await addDoc(P("incomes"),{date:y+"/"+m+"/"+pad(last),cat:S.icats.includes("薪資")?"薪資":S.icats[0],item,amount:+e.dataset.amt})},
+  fixed:async()=>{S.weekly=+$("#fx").value||0;await saveSet();draw()},
+  addc:async(_,e)=>{const k=e.dataset.k,c=$("#"+e.dataset.i).value.trim();if(c&&!S[k].includes(c)){S[k].push(c);await saveSet()}draw()},
+  rmc:async(v,e)=>{const k=e.dataset.k;if(S[k].length>1){S[k]=S[k].filter(c=>c!==v);if(k==="accts")delete S.link[v];await saveSet()}draw()},
+  addm:async()=>{const m=$("#me").value.trim().toLowerCase();if(!m)return;await setDoc(doc(db,"members",m),{role:$("#mr").value});await loadMembers();draw()},
+  rm:async(_,e)=>{if(confirm("移除這位成員的權限?")){await deleteDoc(doc(db,"members",e.dataset.id));await loadMembers();draw()}}
+};
+document.addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(t&&t.tagName!=="SELECT"&&t.tagName!=="INPUT"&&act_[t.dataset.a])act_[t.dataset.a](t.dataset.v,t)});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const i=e.target.id;if(i==="qa"){e.target.value=calc(e.target.value)||e.target.value;act_.add()}if(i==="et")act_.adde();if(i==="tt")act_.addt();if(i==="nt")act_.addn()});
+document.addEventListener("change",async e=>{const t=e.target,a=t.dataset.a;
+  if(a==="cell"){const y=S.year,m=S.years[y]??=Array.from({length:12},()=>({}));m[+t.dataset.i][t.dataset.k]=calc(t.value)||0;await setDoc(D("years",String(y)),{m});draw()}
+  if(a==="role"){await setDoc(doc(db,"members",t.dataset.id),{role:t.value});await loadMembers()}
+  if(a==="qt"){S.qt=t.value;draw()}
+  if(a==="flt"){S[t.dataset.k]=t.value;draw()}
+  if(a==="wj"){S.wj=t.value;const j=S.jobs.find(x=>x.id===t.value);if(j)S.wmode=j.rate>0?"h":"p";draw()}
+  if(a==="wmode"){S.wmode=t.value;draw()}
+  if(a==="lnk"){if(t.value)S.link[t.dataset.id]=t.value;else delete S.link[t.dataset.id];S.link[SA]=SP;await saveSet();draw()}
+  if(a==="photo"){for(const f of t.files){try{const d=await shrink(f);await addDoc(P("photos"),{data:d,cap:"",by:S.user.email,at:Date.now()})}catch(x){alert("這張照片無法上傳:"+x.message)}}t.value=""}
+  if(a==="tog")await updateDoc(D("todos",t.dataset.id),{done:t.checked});
+});
+</script></body></html>
