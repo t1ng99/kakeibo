@@ -55,6 +55,10 @@ td input{width:96px;text-align:right;border-color:transparent;background:transpa
 .ov{position:fixed;inset:0;background:rgba(91,71,86,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}.ovb{background:#fff;border-radius:24px;padding:12px;max-width:min(92vw,720px);max-height:92vh;overflow:auto}.ovb img{max-width:100%;max-height:70vh;border-radius:16px;display:block;margin:0 auto 10px}
 .notes{margin-top:12px;display:flex;flex-direction:column;gap:10px}.note{border-radius:18px;padding:10px 14px;box-shadow:0 3px 8px rgba(255,150,180,.15);word-break:break-word}.note.c0{background:#fff0f5}.note.c1{background:#f1ecff}.note.c2{background:#fff1de}.note .m{margin-top:4px}
 .chip{display:inline-block;border-radius:99px;padding:2px 10px;font-size:12px;border:1.5px solid #ffd3e0;background:#fff}.chip.paid{background:#def5ea;border-color:#9bd8bb;color:#2f7d5e}.chip.part{background:#fff1de;border-color:#ffcf9a;color:#b3701c}.chip.due{background:#ffe4ec;border-color:#ff9fba;color:#d6406f}.chip.up{background:#f4f1f5;border-color:#e3dce6;color:#8d7f96}
+textarea{font:inherit;color:var(--ink);border:2px solid #ffd3e0;border-radius:14px;padding:8px 11px;background:#fff;min-width:0;width:100%;resize:vertical}textarea:focus{outline:none;border-color:#ff9fba}
+.wk7{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}@media(max-width:900px){.wk7{grid-template-columns:1fr}}
+.dayc{background:#fff;border:2px solid #ffe3ec;border-radius:16px;padding:8px 10px}.dayc.tdc{border-color:#ff8fb0;background:#fff0f5}
+.slot{border-top:1.5px dashed #ffdbe6;padding:4px 0;font-size:13px}.mi{display:flex;justify-content:space-between;gap:4px;background:#fff0f5;border-radius:8px;padding:1px 6px;margin:2px 0}
 </style></head><body><div id="app"></div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -71,7 +75,7 @@ const DEF=["學費","居家","尿布、奶粉","醫療","保險","伙食","娛�
 
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const now=new Date(),FY0=now.getMonth()>=6?now.getFullYear():now.getFullYear()-1;
-const S={cats:[...DEF],icats:[...IDEF],pays:[...PDEF],accts:[...ADEF],sav:[],pts:[],wish:[],people:[],link:{[SA]:SP},ac:null,pp:null,ed:null,fw:"",fc:"",fp:"",fq:"",jobs:[],je:null,wj:null,wmode:"h",qk:"home",fk:"",tenants:[],te:null,iy:now.getFullYear(),im:now.getMonth(),pcats:[...PCATS],picats:[...PICATS],pf:false,pfw:null,since:"",photos:[],notes:[],zoom:null,user:null,role:null,lid:null,tab:"us",year:now.getFullYear(),years:{},weekly:0,cy:now.getFullYear(),cm:now.getMonth(),ay:now.getFullYear(),am:now.getMonth(),qt:"x",sel:null,ev:[],inc:[],todos:[],exp:[],shifts:[],wkl:[],wp:null,wy:FY0,members:[],msg:""};
+const S={cats:[...DEF],icats:[...IDEF],pays:[...PDEF],accts:[...ADEF],sav:[],pts:[],wish:[],people:[],link:{[SA]:SP},ac:null,pp:null,ed:null,fw:"",fc:"",fp:"",fq:"",jobs:[],je:null,wj:null,wmode:"h",lf:"shop",shop:[],stock:[],rec:[],meals:[],mw:0,msel:null,mrec:null,ste:null,re:null,qk:"home",fk:"",tenants:[],te:null,iy:now.getFullYear(),im:now.getMonth(),pcats:[...PCATS],picats:[...PICATS],pf:false,pfw:null,since:"",photos:[],notes:[],zoom:null,user:null,role:null,lid:null,tab:"us",year:now.getFullYear(),years:{},weekly:0,cy:now.getFullYear(),cm:now.getMonth(),ay:now.getFullYear(),am:now.getMonth(),qt:"x",sel:null,ev:[],inc:[],todos:[],exp:[],shifts:[],wkl:[],wp:null,wy:FY0,members:[],msg:""};
 const $=s=>document.querySelector(s),n=x=>Math.round(+x||0).toLocaleString();
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const P=(...a)=>collection(db,"ledgers",S.lid,...a), D=(...a)=>doc(db,"ledgers",S.lid,...a);
@@ -94,7 +98,7 @@ async function openLedger(){
   if(unsub)unsub();
   S.years={};(await getDocs(P("years"))).forEach(d=>S.years[d.id]=d.data().m);
   const f=await getDoc(D("meta","settings")),fd=f.exists()?f.data():{};S.weekly=fd.weekly||0;S.since=fd.since||"";S.cats=fd.cats?.length?fd.cats:[...DEF];S.icats=fd.icats?.length?fd.icats:[...IDEF];S.pays=fd.pays?.length?fd.pays:[...PDEF];S.accts=fd.accts?.length?fd.accts:[...ADEF];S.pcats=fd.pcats?.length?fd.pcats:[...PCATS];S.picats=fd.picats?.length?fd.picats:[...PICATS];S.link={...(fd.link||{}),[SA]:SP};await setDoc(D("people",S.user.email),{email:S.user.email,seen:Date.now()},{merge:true});
-  const sb=(q,k)=>onSnapshot(P(q),s=>{S[k]=s.docs.map(d=>({id:d.id,...d.data()}));draw();});const u=[sb("expenses","exp"),sb("incomes","inc"),sb("events","ev"),sb("todos","todos"),sb("shifts","shifts"),sb("work","wkl"),sb("savings","sav"),sb("points","pts"),sb("wishes","wish"),sb("people","people"),sb("photos","photos"),sb("notes","notes"),sb("jobs","jobs"),sb("tenants","tenants")];unsub=()=>u.forEach(f=>f());
+  const sb=(q,k)=>onSnapshot(P(q),s=>{S[k]=s.docs.map(d=>({id:d.id,...d.data()}));draw();});const u=[sb("expenses","exp"),sb("incomes","inc"),sb("events","ev"),sb("todos","todos"),sb("shifts","shifts"),sb("work","wkl"),sb("savings","sav"),sb("points","pts"),sb("wishes","wish"),sb("people","people"),sb("photos","photos"),sb("notes","notes"),sb("jobs","jobs"),sb("tenants","tenants"),sb("shop","shop"),sb("stock","stock"),sb("recipes","rec"),sb("meals","meals")];unsub=()=>u.forEach(f=>f());
   draw();
 }
 const g=(y,i,k)=>+(S.years[y]?.[i]?.[k])||0;
@@ -155,9 +159,9 @@ function draw(){
   const a=$("#app");
   if(!S.user)return a.innerHTML=`<div class="login card"><h1>家計簿</h1><p class="m">用 Google 帳號登入,只有被授權的人可以進入。</p><button class="btn" data-a="login">使用 Google 登入</button><p class="err">${esc(S.msg)}</p></div>`;
   if(!S.role)return a.innerHTML=`<div class="login card"><h3>無法進入</h3><p class="err">${esc(S.msg)}</p><button class="btn o" data-a="out">登出</button></div>`;
-  const adm=S.role==="admin",T=[["us","我們"],["in","總覽"],["cal","月曆"],["ap","收支表"],["ib","IBIS"],["wk","工時薪資"],["pt","集點"],["st","歷年統計"],...(adm?[["se","設定"]]:[])];
+  const adm=S.role==="admin",T=[["us","我們"],["in","總覽"],["cal","月曆"],["ap","收支表"],["ib","IBIS"],["wk","工時薪資"],["pt","集點"],["lf","生活"],["st","歷年統計"],...(adm?[["se","設定"]]:[])];
   a.innerHTML=`<header><span class="logo">♡</span><span class="brand">家計簿</span><nav>${T.map(t=>`<button class="${S.tab===t[0]?"on":""}" data-a="tab" data-v="${t[0]}">${t[1]}</button>`).join("")}</nav><span class="sp"></span><button class="gh" data-a="prof">${AV(S.user.email)} ${nm(S.user.email)} ✎</button><span class="tag">${adm?"管理者":"成員"}</span><button class="gh" data-a="out">登出</button></header><main>${S.pf?vPf():""}
-  ${({us:vUs,in:vIn,cal:vCal,st:vSt,ap:vAp,ib:vIb,wk:vWk,pt:vPt,se:vSe})[S.tab]()}</main>`;
+  ${({us:vUs,in:vIn,cal:vCal,st:vSt,ap:vAp,ib:vIb,wk:vWk,pt:vPt,lf:vLf,se:vSe})[S.tab]()}</main>`;
 }
 function vUs(){
   const me=S.user.email,ppl=pplAll(),T=new Date(),today=new Date(T.getFullYear(),T.getMonth(),T.getDate());
@@ -224,6 +228,58 @@ function vIb(){
   <div class="quick"><div class="row"><b style="color:var(--gold)">${te?"修改租客":"新增租客"}</b><input id="tn" placeholder="租客姓名" value="${esc(te?te.name:"")}" size="12"><input id="tr" placeholder="房間" value="${esc(te?te.room||"":"")}" size="8"><input id="tp" placeholder="租金" value="${te?te.rent:""}" size="8"><select id="tf"><option value="w" ${!te||te.freq==="w"?"selected":""}>每週</option><option value="f" ${te&&te.freq==="f"?"selected":""}>每兩週</option><option value="m" ${te&&te.freq==="m"?"selected":""}>每月</option></select><span class="m">第一次應繳日</span><input id="ts" type="date" value="${esc(te?dk(te.start)||"":"")}"><span class="m">結束日(選填)</span><input id="tz" type="date" value="${esc(te&&te.end?dk(te.end)||"":"")}"><input id="tb" placeholder="保證金" value="${te&&te.bond?te.bond:""}" size="8"><input id="tq" placeholder="備註" value="${esc(te?te.note||"":"")}" style="flex:1;min-width:100px"><button class="btn g sm" data-a="tensave">${te?"儲存修改":"新增"}</button>${te?'<button class="btn o sm" data-a="tencancel">取消</button>':""}</div><div class="m" style="margin-top:6px">系統會從第一次應繳日開始,依週期算出每一期該繳的日子,再用收到的租金(依時間先後)去抵,沒抵到的就顯示未繳與逾期天數。</div><div class="err" id="ter"></div></div>
   <div class="grid"><div class="card"><h3>${m+1} 月明細 <span class="m">${all.length} 筆</span></h3>${all.map(e=>`<div class="item"><span class="tag ${e.tt}">${e.tt==="i"?"收入":"支出"}</span><span class="n"><b>${esc(e.item)}</b><br><span class="m">${esc(e.date)}・${esc(e.cat||"其他")}${e.pay?"・"+esc(PL(e.pay)):""}${e.store?"・"+esc(e.store):""}${e.note?"・"+esc(e.note):""}${e.by?"・"+nm(e.by):""}</span></span><span class="a" style="color:${e.tt==="i"?"var(--gr)":"inherit"}">${e.tt==="i"?"+":"-"}${n(e.amount)}</span><button class="x" title="到收支表修改" data-a="ibedit" data-c="${e.c}" data-id="${e.id}">✎</button><button class="x" data-a="delc" data-c="${e.c}" data-id="${e.id}">✕</button></div>`).join("")||'<p class="m">這個月還沒有 IBIS 的紀錄</p>'}</div>
   <div class="card"><h3>開銷分類</h3>${bars}<div class="row" style="justify-content:space-between"><b>開銷合計</b><b style="color:var(--gr)">${n(tx)}</b></div></div></div>`;
+}
+const SHOPC=["蔬果","肉海鮮","乳蛋","主食","調味","日用品","其他"],LOCS=["冰箱","冷凍","櫥櫃","日用品","其他"],SLOT={b:"早餐",l:"午餐",d:"晚餐"};
+const nkey=x=>String(x||"").trim().toLowerCase();
+const parseIng=t=>String(t||"").split(/\n/).map(x=>x.trim()).filter(Boolean).map(x=>{const m=x.match(/^(.+?)[\s,\uFF0C:\uFF1Ax\u00D7]*(\d+(?:\.\d+)?)\s*(\S*)$/i);return m?{name:m[1].trim(),qty:+m[2],unit:m[3]||""}:{name:x,qty:0,unit:""}});
+const ingStr=a=>(a||[]).map(i=>i.name+(i.qty?" "+i.qty+(i.unit?" "+i.unit:""):"")).join("\n");
+const stockOf=x=>S.stock.filter(s=>nkey(s.name)===nkey(x)).reduce((a,s)=>a+(+s.qty||0),0);
+const needFor=ings=>{const o={};ings.forEach(i=>{const k=nkey(i.name),e=o[k]??={name:i.name,qty:0,unit:i.unit,any:false};e.qty+=+i.qty||0;if(!(+i.qty))e.any=true;if(!e.unit)e.unit=i.unit});
+  return Object.values(o).map(e=>{const have=stockOf(e.name),miss=e.qty?Math.max(0,e.qty-have):(have>0?0:1);return {...e,have,miss}}).filter(e=>e.miss>0)};
+const addShop=async list=>{let c=0;for(const it of list){const ex=S.shop.find(x=>!x.done&&nkey(x.text)===nkey(it.name));if(ex)await updateDoc(D("shop",ex.id),{qty:(+ex.qty||0)+it.miss});else await addDoc(P("shop"),{text:it.name,qty:it.miss,unit:it.unit||"",cat:it.cat||"其他",done:false,by:S.user.email,at:Date.now()});c++}return c};
+function vLf(){
+  const T=[["shop","購物清單"],["meal","餐點計畫"],["rec","食譜"],["stk","庫存"]],badge=S.shop.filter(x=>!x.done).length;
+  return `<h1>生活</h1><div class="row" style="margin-bottom:14px">${T.map(t=>`<button class="pill ${S.lf===t[0]?"on":""}" data-a="lf" data-v="${t[0]}">${t[1]}${t[0]==="shop"&&badge?" ("+badge+")":""}</button>`).join("")}</div>${({shop:vShop,meal:vMeal,rec:vRec,stk:vStk})[S.lf]()}`;
+}
+function vShop(){
+  const open=S.shop.filter(x=>!x.done).sort((a,b)=>(a.at||0)-(b.at||0)),done=S.shop.filter(x=>x.done);
+  const row=x=>`<div class="item"><input type="checkbox" data-a="shtog" data-id="${x.id}" ${x.done?"checked":""}><span class="n" style="${x.done?"text-decoration:line-through;color:var(--mut)":""}">${esc(x.text)}</span><span class="m">${x.qty?esc(x.qty)+" "+esc(x.unit||""):""}</span><span class="m">${nm(x.by)}</span><button class="x" data-a="delc" data-c="shop" data-id="${x.id}">✕</button></div>`;
+  const groups=SHOPC.map(c=>[c,open.filter(x=>(x.cat||"其他")===c)]).filter(g=>g[1].length);
+  return `<div class="quick"><div class="row"><b style="color:var(--gold)">加入購物清單</b><input id="sn" placeholder="想買什麼?" style="flex:1;min-width:140px"><input id="sq" placeholder="數量" size="5" value="1"><input id="su" placeholder="單位" size="5"><select id="sc">${SHOPC.map(c=>`<option>${c}</option>`).join("")}</select><button class="btn" data-a="shadd">加入</button></div><div class="m" style="margin-top:6px">也可以從「食譜」或「餐點計畫」一鍵把缺的食材加進來。勾選代表已買。</div></div>
+  <div class="card"><h3>要買的 <span class="m">${open.length} 項</span></h3>${groups.map(([c,a])=>`<div class="m" style="margin-top:8px"><b>${c}</b></div>${a.map(row).join("")}`).join("")||'<p class="m">清單是空的</p>'}</div>
+  <div class="card" style="margin-top:14px"><div class="row"><h3 style="margin:0">已買 <span class="m">${done.length} 項</span></h3><span class="sp"></span>${done.length?'<button class="btn g sm" data-a="shstock">已買的加入庫存</button><button class="btn o sm" data-a="shclear">清除已買</button>':""}</div>${done.map(row).join("")}</div>`;
+}
+function vStk(){
+  const td=new Date();td.setHours(0,0,0,0);const ed=S.stock.find(x=>x.id===S.ste);
+  const dleft=x=>x.exp?Math.floor((new Date(x.exp+"T00:00:00")-td)/864e5):null,low=x=>(+x.min>0)&&(+x.qty<=+x.min),soon=x=>{const d=dleft(x);return d!==null&&d<=3};
+  const lows=S.stock.filter(low),sn=S.stock.filter(soon);
+  const row=x=>{const d=dleft(x);return `<div class="item"><span class="n"><b>${esc(x.name)}</b>${low(x)?' <span class="tag x">快沒了</span>':""}${d!==null&&d<0?' <span class="tag x">已過期</span>':d!==null&&d<=3?` <span class="tag">${d} 天內到期</span>`:""}<br><span class="m">${x.exp?"到期 "+esc(x.exp):""}${+x.min>0?(x.exp?"・":"")+"低於 "+esc(x.min)+" 提醒":""}</span></span><button class="pill" data-a="stqty" data-v="-1" data-id="${x.id}">−</button><b>${esc(x.qty)} ${esc(x.unit||"")}</b><button class="pill" data-a="stqty" data-v="1" data-id="${x.id}">＋</button>${low(x)?`<button class="btn sm" data-a="stshop" data-id="${x.id}">加入購物清單</button>`:""}<button class="x" data-a="stedit" data-v="${x.id}">✎</button><button class="x" data-a="delc" data-c="stock" data-id="${x.id}">✕</button></div>`};
+  const groups=LOCS.map(l=>[l,S.stock.filter(x=>(x.loc||"其他")===l).sort((a,b)=>String(a.name).localeCompare(String(b.name)))]).filter(g=>g[1].length);
+  return `${lows.length||sn.length?`<div class="quick" style="border-color:#ee5f8c"><b style="color:#ee5f8c">庫存提醒</b>${lows.length?`<div class="m">快沒了 ${lows.length} 項:${lows.map(x=>esc(x.name)).join("、")}</div>`:""}${sn.length?`<div class="m">快到期或已過期 ${sn.length} 項:${sn.map(x=>esc(x.name)).join("、")}</div>`:""}${lows.length?'<div style="margin-top:6px"><button class="btn sm" data-a="stlowall">快沒了的全部加進購物清單</button></div>':""}</div>`:""}
+  <div class="quick"><div class="row"><b style="color:var(--gold)">${ed?"修改庫存":"新增庫存"}</b><input id="kn" placeholder="品項" value="${esc(ed?ed.name:"")}" style="flex:1;min-width:120px"><input id="kq" placeholder="數量" value="${ed?esc(ed.qty):"1"}" size="5"><input id="ku" placeholder="單位" value="${esc(ed?ed.unit||"":"")}" size="5"><select id="kl">${LOCS.map(l=>`<option ${ed&&ed.loc===l?"selected":""}>${l}</option>`).join("")}</select><span class="m">低於</span><input id="km" placeholder="提醒" value="${ed&&ed.min?esc(ed.min):""}" size="4"><span class="m">到期日</span><input id="ke" type="date" value="${esc(ed?ed.exp||"":"")}"><button class="btn g sm" data-a="stsave">${ed?"儲存修改":"新增"}</button>${ed?'<button class="btn o sm" data-a="stcancel">取消</button>':""}</div><div class="m" style="margin-top:6px">「低於」填的是提醒數量,數量降到這個數字以下就會顯示快沒了。</div></div>
+  ${groups.map(([l,a])=>`<div class="card" style="margin-bottom:12px"><h3>${l} <span class="m">${a.length} 項</span></h3>${a.map(row).join("")}</div>`).join("")||'<p class="m">庫存還是空的</p>'}`;
+}
+function vRec(){
+  const re=S.rec.find(x=>x.id===S.re),recs=S.rec.slice().sort((a,b)=>(b.at||0)-(a.at||0));
+  const card=x=>{const miss=needFor(x.ingr||[]),mk=new Set(miss.map(m=>nkey(m.name)));return `<div class="card" style="margin-bottom:12px"><div class="row"><b style="font-size:17px">${esc(x.name)}</b>${x.tags?`<span class="m">${esc(x.tags)}</span>`:""}<span class="sp"></span><button class="btn g sm" data-a="recshop" data-id="${x.id}">缺的加進購物清單${miss.length?"("+miss.length+")":""}</button><button class="btn o sm" data-a="recplan" data-id="${x.id}">排進餐點</button><button class="btn o sm" data-a="recedit" data-v="${x.id}">編輯</button><button class="x" data-a="delc" data-c="recipes" data-id="${x.id}">✕</button></div>
+  <div class="row" style="margin-top:8px">${(x.ingr||[]).map(i=>`<span class="chip ${mk.has(nkey(i.name))?"due":"paid"}">${esc(i.name)}${i.qty?" "+i.qty+(i.unit||""):""}</span>`).join("")}</div><div class="m" style="margin-top:4px">綠色 = 庫存夠,紅色 = 庫存不夠或沒有</div>${x.steps?`<div class="m" style="margin-top:8px;white-space:pre-wrap">${esc(x.steps)}</div>`:""}${/^https?:\/\//.test(x.url||"")?`<div class="m" style="margin-top:4px"><a href="${esc(x.url)}" target="_blank" rel="noopener">原始食譜連結</a></div>`:""}</div>`};
+  return `<div class="quick"><div class="row"><b style="color:var(--gold)">${re?"修改食譜":"新增食譜"}</b><input id="crn" placeholder="食譜名稱" value="${esc(re?re.name:"")}" style="flex:1;min-width:140px"><input id="crt" placeholder="標籤(例如:快速、早餐)" value="${esc(re?re.tags||"":"")}" style="flex:1;min-width:140px"></div>
+  <div style="margin-top:8px"><textarea id="cri" rows="5" placeholder="食材,一行一樣:名稱 數量 單位&#10;雞蛋 2 顆&#10;牛奶 200 ml&#10;鹽">${esc(re?ingStr(re.ingr):"")}</textarea></div>
+  <div style="margin-top:8px"><textarea id="crs" rows="3" placeholder="作法(選填)">${esc(re?re.steps||"":"")}</textarea></div>
+  <div class="row" style="margin-top:8px"><input id="cru" placeholder="原始食譜網址(選填)" value="${esc(re?re.url||"":"")}" style="flex:1;min-width:160px"><button class="btn g" data-a="recsave">${re?"儲存修改":"新增食譜"}</button>${re?'<button class="btn o" data-a="reccancel">取消</button>':""}</div><div class="err" id="cre"></div></div>
+  ${recs.map(card).join("")||'<p class="m">還沒有食譜</p>'}`;
+}
+function vMeal(){
+  const ws=new Date();ws.setHours(0,0,0,0);ws.setDate(ws.getDate()-((ws.getDay()+6)%7)+7*S.mw);
+  const days=[...Array(7).keys()].map(i=>{const d=new Date(ws);d.setDate(ws.getDate()+i);return d}),WD=["週一","週二","週三","週四","週五","週六","週日"],td=tk(),a0=fmtD(days[0]),a6=fmtD(days[6]);
+  const wk=S.meals.filter(m=>m.date>=a0&&m.date<=a6),rn=id=>(S.rec.find(x=>x.id===id)||{}).name,sel=S.msel;
+  const cell=(k,sl)=>`<div class="slot"><div class="row" style="justify-content:space-between"><span class="m">${SLOT[sl]}</span><button class="x" data-a="msel" data-d="${k}" data-s="${sl}">＋</button></div>${wk.filter(m=>m.date===k&&m.slot===sl).map(m=>`<div class="mi"><span>${esc(m.recipe?(rn(m.recipe)||m.text||"(食譜已刪除)"):m.text)}</span><button class="x" data-a="delc" data-c="meals" data-id="${m.id}">✕</button></div>`).join("")}</div>`;
+  const wkIngr=wk.filter(m=>m.recipe).flatMap(m=>(S.rec.find(x=>x.id===m.recipe)||{}).ingr||[]),nmiss=needFor(wkIngr).length;
+  return `<div class="row" style="margin-bottom:14px"><button class="pill" data-a="mw" data-v="-1">‹</button><b style="font-size:18px">${a0.slice(5)} ～ ${a6.slice(5)}${S.mw===0?"(本週)":""}</b><button class="pill" data-a="mw" data-v="1">›</button><span class="sp"></span><button class="btn g sm" data-a="mlshop">這週缺的食材加進購物清單${nmiss?"("+nmiss+")":""}</button></div>
+  ${S.mrec&&!sel?`<div class="quick"><b style="color:var(--gold)">想排「${esc(rn(S.mrec)||"")}」</b> <span class="m">點下面某一餐的 ＋ 選日期。</span> <button class="pill" data-a="mlcancel">取消</button></div>`:""}
+  ${sel?`<div class="quick"><div class="row"><b style="color:var(--gold)">加到 ${esc(sel.date)} ${SLOT[sel.slot]}</b><select id="mr"><option value="">(自己輸入)</option>${S.rec.map(x=>`<option value="${x.id}" ${S.mrec===x.id?"selected":""}>${esc(x.name)}</option>`).join("")}</select><input id="mt" placeholder="或直接寫,例如:外食、泡麵" style="flex:1;min-width:140px"><button class="btn" data-a="mladd">加入</button><button class="btn o" data-a="mlcancel">取消</button></div></div>`:""}
+  <div class="wk7">${days.map((d,i)=>{const k=fmtD(d);return `<div class="dayc ${k===td?"tdc":""}"><b>${WD[i]} <span class="m">${d.getMonth()+1}/${d.getDate()}</span></b>${["b","l","d"].map(sl=>cell(k,sl)).join("")}</div>`}).join("")}</div>
+  <p class="m" style="margin-top:10px">排好餐點後,按上方按鈕就能把這週食譜缺的食材(會先扣掉庫存)一次加進購物清單。</p>`;
 }
 function vAp(){
   const me=S.user.email,ppl=pplAll(),y=S.ay,m=S.am,pre=ym(y,m),LB={x:"支出",i:"收入",s:"存款"};
@@ -345,6 +401,26 @@ const act_={
   wstat:async(v,e)=>{await updateDoc(D("wishes",e.dataset.id),{status:v,by:S.user.email,upd:Date.now()})},
   redeem:async(_,e)=>{const w=S.wish.find(x=>x.id===e.dataset.id);if(!w||bal(w.owner,w.type)<GOAL||!confirm("用 "+GOAL+" 點兌換這個願望?"))return;
     await addDoc(P("points"),{to:w.owner,kind:w.type,delta:-GOAL,note:"兌換:"+w.text,by:S.user.email,at:Date.now()});await updateDoc(D("wishes",w.id),{status:"done",upd:Date.now()})},
+  lf:v=>{S.lf=v;draw()},
+  shadd:async()=>{const t=$("#sn").value.trim();if(!t)return;await addDoc(P("shop"),{text:t,qty:+$("#sq").value||1,unit:$("#su").value.trim(),cat:$("#sc").value,done:false,by:S.user.email,at:Date.now()})},
+  shclear:async()=>{if(!confirm("清除所有已買的項目?"))return;for(const x of S.shop.filter(y=>y.done))await deleteDoc(D("shop",x.id))},
+  shstock:async()=>{const dn=S.shop.filter(x=>x.done);if(!dn.length||!confirm("把 "+dn.length+" 項已買的加進庫存,並從清單移除?"))return;
+    for(const x of dn){const q=+x.qty||1,ex=S.stock.find(y=>nkey(y.name)===nkey(x.text));if(ex)await updateDoc(D("stock",ex.id),{qty:(+ex.qty||0)+q});else await addDoc(P("stock"),{name:x.text,qty:q,unit:x.unit||"",loc:"其他",min:0,exp:"",by:S.user.email,at:Date.now()});await deleteDoc(D("shop",x.id))}},
+  stedit:v=>{S.ste=v;draw()},stcancel:()=>{S.ste=null;draw()},
+  stsave:async()=>{const d={name:$("#kn").value.trim(),qty:+$("#kq").value||0,unit:$("#ku").value.trim(),loc:$("#kl").value,min:+$("#km").value||0,exp:$("#ke").value};if(!d.name)return;
+    if(S.ste)await updateDoc(D("stock",S.ste),d);else await addDoc(P("stock"),{...d,by:S.user.email,at:Date.now()});S.ste=null;draw()},
+  stqty:async(v,e)=>{const x=S.stock.find(y=>y.id===e.dataset.id);if(x)await updateDoc(D("stock",x.id),{qty:Math.max(0,(+x.qty||0)+ +v)})},
+  stshop:async(_,e)=>{const x=S.stock.find(y=>y.id===e.dataset.id);if(x)await addShop([{name:x.name,miss:Math.max(1,(+x.min||1)*2-(+x.qty||0)),unit:x.unit}])},
+  stlowall:async()=>{const l=S.stock.filter(x=>(+x.min>0)&&(+x.qty<=+x.min));await addShop(l.map(x=>({name:x.name,miss:Math.max(1,(+x.min||1)*2-(+x.qty||0)),unit:x.unit})));S.lf="shop";draw()},
+  recedit:v=>{S.re=v;draw()},reccancel:()=>{S.re=null;draw()},
+  recsave:async()=>{const d={name:$("#crn").value.trim(),tags:$("#crt").value.trim(),ingr:parseIng($("#cri").value),steps:$("#crs").value.trim(),url:$("#cru").value.trim()};if(!d.name)return $("#cre").textContent="請填食譜名稱";if(!d.ingr.length)return $("#cre").textContent="請至少填一樣食材";
+    if(S.re)await updateDoc(D("recipes",S.re),d);else await addDoc(P("recipes"),{...d,by:S.user.email,at:Date.now()});S.re=null;draw()},
+  recshop:async(_,e)=>{const x=S.rec.find(y=>y.id===e.dataset.id);if(!x)return;const l=needFor(x.ingr||[]);if(!l.length)return alert("庫存的食材都夠了");await addShop(l);S.lf="shop";draw()},
+  recplan:(_,e)=>{S.mrec=e.dataset.id;S.lf="meal";S.msel=null;draw()},
+  mw:v=>{S.mw+=+v;draw()},msel:(_,e)=>{S.msel={date:e.dataset.d,slot:e.dataset.s};draw()},mlcancel:()=>{S.msel=null;S.mrec=null;draw()},
+  mladd:async()=>{const sl=S.msel,rid=$("#mr").value,t=$("#mt").value.trim();if(!sl||(!rid&&!t))return;await addDoc(P("meals"),{date:sl.date,slot:sl.slot,recipe:rid,text:t,by:S.user.email,at:Date.now()});S.msel=null;S.mrec=null;draw()},
+  mlshop:async()=>{const ws=new Date();ws.setHours(0,0,0,0);ws.setDate(ws.getDate()-((ws.getDay()+6)%7)+7*S.mw);const a=fmtD(ws),e2=new Date(ws);e2.setDate(e2.getDate()+6);const b=fmtD(e2);
+    const ings=S.meals.filter(m=>m.recipe&&m.date>=a&&m.date<=b).flatMap(m=>(S.rec.find(x=>x.id===m.recipe)||{}).ingr||[]),l=needFor(ings);if(!l.length)return alert("這週食譜缺的食材沒有了(庫存夠或還沒排食譜)");await addShop(l);S.lf="shop";draw()},
   ibm:v=>{S.im+=+v;if(S.im<0){S.im=11;S.iy--}if(S.im>11){S.im=0;S.iy++}draw()},
   ibedit:(_,e)=>{const ent=(({expenses:S.exp,incomes:S.inc})[e.dataset.c]||[]).find(x=>x.id===e.dataset.id),dd=ent&&dk(ent.date);S.ed={c:e.dataset.c,id:e.dataset.id};S.qk="ibis";if(dd){S.ay=+dd.slice(0,4);S.am=+dd.slice(5,7)-1}S.tab="ap";draw()},
   tenedit:v=>{S.te=v;draw()},tencancel:()=>{S.te=null;draw()},
@@ -389,7 +465,7 @@ const act_={
   rm:async(_,e)=>{if(confirm("移除這位成員的權限?")){await deleteDoc(doc(db,"members",e.dataset.id));await loadMembers();draw()}}
 };
 document.addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(t&&t.tagName!=="SELECT"&&t.tagName!=="INPUT"&&act_[t.dataset.a])act_[t.dataset.a](t.dataset.v,t)});
-document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const i=e.target.id;if(i==="qa"){e.target.value=calc(e.target.value)||e.target.value;act_.add()}if(i==="et")act_.adde();if(i==="tt")act_.addt();if(i==="nt")act_.addn()});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const i=e.target.id;if(i==="qa"){e.target.value=calc(e.target.value)||e.target.value;act_.add()}if(i==="et")act_.adde();if(i==="tt")act_.addt();if(i==="nt")act_.addn();if(i==="sn")act_.shadd()});
 document.addEventListener("change",async e=>{const t=e.target,a=t.dataset.a;
   if(a==="cell"){const y=S.year,m=S.years[y]??=Array.from({length:12},()=>({}));m[+t.dataset.i][t.dataset.k]=calc(t.value)||0;await setDoc(D("years",String(y)),{m});draw()}
   if(a==="role"){await setDoc(doc(db,"members",t.dataset.id),{role:t.value});await loadMembers()}
@@ -401,6 +477,7 @@ document.addEventListener("change",async e=>{const t=e.target,a=t.dataset.a;
   if(a==="wmode"){S.wmode=t.value;draw()}
   if(a==="lnk"){if(t.value)S.link[t.dataset.id]=t.value;else delete S.link[t.dataset.id];S.link[SA]=SP;await saveSet();draw()}
   if(a==="photo"){for(const f of t.files){try{const d=await shrink(f);await addDoc(P("photos"),{data:d,cap:"",by:S.user.email,at:Date.now()})}catch(x){alert("這張照片無法上傳:"+x.message)}}t.value=""}
+  if(a==="shtog")await updateDoc(D("shop",t.dataset.id),{done:t.checked});
   if(a==="tog")await updateDoc(D("todos",t.dataset.id),{done:t.checked});
 });
 </script></body></html>
